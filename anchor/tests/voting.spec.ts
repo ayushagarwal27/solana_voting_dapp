@@ -80,5 +80,14 @@ describe("voting", () => {
     expect(dona.candidateVotes.toNumber()).toEqual(0);
   });
 
-  it("Vote", async () => {});
+  it("Vote", async () => {
+    await votingProgram.methods.vote("Donald", new anchor.BN(1)).rpc();
+    const [dAddress] = PublicKey.findProgramAddressSync(
+      [new anchor.BN(1).toArrayLike(Buffer, "le", 8), Buffer.from("Donald")],
+      programAddress,
+    );
+    const dona = await votingProgram.account.candidate.fetch(dAddress);
+    console.log(dona);
+    expect(dona.candidateVotes.toNumber()).toEqual(1);
+  });
 });
